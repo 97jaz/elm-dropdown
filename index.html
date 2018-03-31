@@ -1,0 +1,44 @@
+<!html>
+<html>
+<head>
+<script src="example.js"></script>
+<style type="text/css">
+.elm-dropdown {
+  position: relative;
+}
+.elm-dropdown--list {
+  display: none;
+  padding: 0;
+  list-style-type: none;
+  position: absolute;
+}
+
+.elm-dropdown--container .placeholder {
+  display: inline-block;
+}
+.elm-dropdown--container .placeholder::after {
+  content: "›";
+  transform: rotate(90deg);
+  font-size: 150%;
+  line-height: 75%;
+  margin-left: 1rem;
+  float: right;
+}
+
+.elm-dropdown--container[aria-expanded="true"] > .elm-dropdown--list {
+  display: block !important;
+  cursor: pointer;
+}
+
+.elm-dropdown--list li {
+  display: block;
+}
+</style>
+</head>
+
+<body>
+<script>
+  var app = Elm.Dropdown.Single.Example.fullscreen();
+</script>
+</body>
+</html>
