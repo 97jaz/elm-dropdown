@@ -13148,15 +13148,18 @@ var _user$project$Dropdown_Single$view = F3(
 		return A4(_user$project$Dropdown_Common_View$view, _user$project$Dropdown_Single_View$viewMethods, config, model, selectedOption);
 	});
 
-var _user$project$Dropdown_Single_Example$itemToString = function (menuItem) {
-	var _p0 = menuItem;
-	if (_p0.ctor === 'Placeholder') {
-		return 'Select a state';
-	} else {
-		return _p0._0.name;
-	}
-};
-var _user$project$Dropdown_Single_Example$config = _user$project$Dropdown_Single$simpleConfig(_user$project$Dropdown_Single_Example$itemToString);
+var _user$project$Dropdown_Single_Example$config = _user$project$Dropdown_Single$simpleConfig(
+	function (_p0) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'Select a State',
+			A2(
+				_elm_lang$core$Maybe$map,
+				function (_) {
+					return _.name;
+				},
+				_p0));
+	});
 var _user$project$Dropdown_Single_Example$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
@@ -13184,6 +13187,11 @@ var _user$project$Dropdown_Single_Example$states = {
 		}
 	}
 };
+var _user$project$Dropdown_Single_Example$items = {
+	ctor: '::',
+	_0: _elm_lang$core$Maybe$Nothing,
+	_1: A2(_elm_lang$core$List$map, _elm_lang$core$Maybe$Just, _user$project$Dropdown_Single_Example$states)
+};
 var _user$project$Dropdown_Single_Example$Model = F2(
 	function (a, b) {
 		return {menuModel: a, selectedItem: b};
@@ -13192,15 +13200,6 @@ var _user$project$Dropdown_Single_Example$State = F2(
 	function (a, b) {
 		return {abbrev: a, name: b};
 	});
-var _user$project$Dropdown_Single_Example$Placeholder = {ctor: 'Placeholder'};
-var _user$project$Dropdown_Single_Example$StateItem = function (a) {
-	return {ctor: 'StateItem', _0: a};
-};
-var _user$project$Dropdown_Single_Example$items = {
-	ctor: '::',
-	_0: _user$project$Dropdown_Single_Example$Placeholder,
-	_1: A2(_elm_lang$core$List$map, _user$project$Dropdown_Single_Example$StateItem, _user$project$Dropdown_Single_Example$states)
-};
 var _user$project$Dropdown_Single_Example$MenuMsg = function (a) {
 	return {ctor: 'MenuMsg', _0: a};
 };
@@ -13221,7 +13220,7 @@ var _user$project$Dropdown_Single_Example$main = _elm_lang$html$Html$beginnerPro
 	{
 		model: {
 			menuModel: _user$project$Dropdown_Single$flatModel(_user$project$Dropdown_Single_Example$items),
-			selectedItem: _user$project$Dropdown_Single_Example$Placeholder
+			selectedItem: _elm_lang$core$Maybe$Nothing
 		},
 		view: _user$project$Dropdown_Single_Example$view,
 		update: _user$project$Dropdown_Single_Example$update
@@ -13232,7 +13231,7 @@ Elm['Dropdown'] = Elm['Dropdown'] || {};
 Elm['Dropdown']['Single'] = Elm['Dropdown']['Single'] || {};
 Elm['Dropdown']['Single']['Example'] = Elm['Dropdown']['Single']['Example'] || {};
 if (typeof _user$project$Dropdown_Single_Example$main !== 'undefined') {
-    _user$project$Dropdown_Single_Example$main(Elm['Dropdown']['Single']['Example'], 'Dropdown.Single.Example', {"types":{"unions":{"Dropdown.Types.ItemPosition":{"args":["group","option"],"tags":{"ItemPosition":["Dropdown.Types.Item group option","Dropdown.Types.ItemPath group option"]}},"Dropdown.Types.FocusState":{"args":["group","option"],"tags":{"Open":["Dropdown.Types.OpenState group option"],"Blurred":[],"Focused":[]}},"Dropdown.Single.Example.Msg":{"args":[],"tags":{"MenuMsg":["Dropdown.Single.Msg () Dropdown.Single.Example.MenuItem"]}},"Dropdown.Types.Msg":{"args":["group","option","selection"],"tags":{"FocusStateMsg":["Dropdown.Types.FocusState group option"],"NoOp":[],"SelectMsg":["option"]}},"Dropdown.Types.Item":{"args":["group","option"],"tags":{"Group":["group","List (Dropdown.Types.Item group option)"],"Option":["option"]}},"Dropdown.Types.ItemPath":{"args":["group","option"],"tags":{"Node":["group","List (Dropdown.Types.Item group option)","Dropdown.Types.ItemPath group option","List (Dropdown.Types.Item group option)"],"Top":[]}},"Dropdown.Types.OpenState":{"args":["group","option"],"tags":{"Highlight":["Dropdown.Types.ItemPosition group option"],"Initial":[]}},"Dropdown.Single.Example.MenuItem":{"args":[],"tags":{"StateItem":["Dropdown.Single.Example.State"],"Placeholder":[]}}},"aliases":{"Dropdown.Single.Msg":{"args":["group","option"],"type":"Dropdown.Types.Msg group option option"},"Dropdown.Single.Example.State":{"args":[],"type":"{ abbrev : String, name : String }"}},"message":"Dropdown.Single.Example.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Dropdown_Single_Example$main(Elm['Dropdown']['Single']['Example'], 'Dropdown.Single.Example', {"types":{"unions":{"Dropdown.Types.ItemPosition":{"args":["group","option"],"tags":{"ItemPosition":["Dropdown.Types.Item group option","Dropdown.Types.ItemPath group option"]}},"Dropdown.Types.FocusState":{"args":["group","option"],"tags":{"Open":["Dropdown.Types.OpenState group option"],"Blurred":[],"Focused":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dropdown.Single.Example.Msg":{"args":[],"tags":{"MenuMsg":["Dropdown.Single.Msg () (Maybe.Maybe Dropdown.Single.Example.State)"]}},"Dropdown.Types.Msg":{"args":["group","option","selection"],"tags":{"FocusStateMsg":["Dropdown.Types.FocusState group option"],"NoOp":[],"SelectMsg":["option"]}},"Dropdown.Types.Item":{"args":["group","option"],"tags":{"Group":["group","List (Dropdown.Types.Item group option)"],"Option":["option"]}},"Dropdown.Types.ItemPath":{"args":["group","option"],"tags":{"Node":["group","List (Dropdown.Types.Item group option)","Dropdown.Types.ItemPath group option","List (Dropdown.Types.Item group option)"],"Top":[]}},"Dropdown.Types.OpenState":{"args":["group","option"],"tags":{"Highlight":["Dropdown.Types.ItemPosition group option"],"Initial":[]}}},"aliases":{"Dropdown.Single.Msg":{"args":["group","option"],"type":"Dropdown.Types.Msg group option option"},"Dropdown.Single.Example.State":{"args":[],"type":"{ abbrev : String, name : String }"}},"message":"Dropdown.Single.Example.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

@@ -6,8 +6,8 @@ import Html exposing (..)
 
 
 type alias Model =
-    { menuModel : Single.Model () MenuItem
-    , selectedItem : MenuItem
+    { menuModel : Single.Model () (Maybe State)
+    , selectedItem : Maybe State
     }
 
 
@@ -17,13 +17,8 @@ type alias State =
     }
 
 
-type MenuItem
-    = StateItem State
-    | Placeholder
-
-
 type Msg
-    = MenuMsg (Single.Msg () MenuItem)
+    = MenuMsg (Single.Msg () (Maybe State))
 
 
 states : List State
@@ -34,24 +29,14 @@ states =
     ]
 
 
-items : List MenuItem
+items : List (Maybe State)
 items =
-    Placeholder :: (List.map StateItem states)
+    Nothing :: (List.map Just states)
 
 
-itemToString : MenuItem -> String
-itemToString menuItem =
-    case menuItem of
-        Placeholder ->
-            "Select a state"
-
-        StateItem state ->
-            state.name
-
-
-config : Single.Config () MenuItem
+config : Single.Config () (Maybe State)
 config =
-    Single.simpleConfig itemToString
+    Single.simpleConfig ((Maybe.withDefault "Select a State") << (Maybe.map .name))
 
 
 main : Program Never Model Msg
@@ -59,7 +44,7 @@ main =
     Html.beginnerProgram
         { model =
             { menuModel = Single.flatModel items
-            , selectedItem = Placeholder
+            , selectedItem = Nothing
             }
         , view = view
         , update = update
