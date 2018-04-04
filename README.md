@@ -40,7 +40,7 @@ current selection.
 
 ---
 
-## Problems re-exporting type aliases
+## Problems re-exporting value constructors from union types
 
 The division of the code into `Common`, on one hand, and `Single` (and `Multi` or `Checkbox` or whatever) on the other
 is carried over from the older version. With the old code, you generally have to import both `Select` and `Select.Single`
