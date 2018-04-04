@@ -6,13 +6,13 @@ The first thing to look at is probably [Types.elm](src/Dropdown/Types.elm).
 
 A dropdown's model contains two things:
 - the items that it displays
-- its "focus" state (which includes whether or not it's blurred, focused, or open, and, if it's open, what item, 
+- its "focus" state (which includes whether or not it's blurred, focused, or open, and, if it's open, what item,
 if any, is currently highlighted).
 
 In the future, it could also contain a user's query, which would be used to filter which items we display.
 
-A menu item is either a single option or a group of options. Right now, only options are selectable; 
-as with the HTML `<select>` widget, option groups are not selectable. There's no way, right now, 
+A menu item is either a single option or a group of items. Right now, only options are selectable;
+as with the HTML `<select>` widget, option groups are not selectable. There's no way, right now,
 to disable an option or an entire group of options. However, I think that would be straightforward to add.
 
 The menu items are stored in the model as a tree zipper. (The type of this zipper is called `ItemPosition`.)
@@ -22,9 +22,9 @@ to the `view` function. The upside of this is one fewer parameter to keep track 
 The downside is that if the user needs multiple menus that use the same options, then state is duplicated. That seems
 like a fairly rare case to me.
 
-The `Msg` and `UpdateResult` types are practically the same as in the old version, and I'm not confident of the 
+The `Msg` and `UpdateResult` types are practically the same as in the old version, and I'm not confident of the
 approach here. All of uses of the old widget take some action when the menu's selection changes, but that's not
-the only desireable mode of operation. For the multi-select widget, for example, it would be perfectly normal
+the only desirable mode of operation. For the multi-select widget, for example, it would be perfectly normal
 (and arguably better) to wait until the menu closes before taking action on any change, but the current `UpdateResult`
 only differentiates coarsely between changes to the selection and changes to the focus state of the widget. The client
 could peer into the returned `FocusState` to figure out if the menu is closed, or we could provide functions on the model
@@ -64,8 +64,8 @@ type alias UpdateResult group option =
 ```
 
 Unfortunately, though, while the type aliases can be re-exported without trouble, re-exporting the value constructors
-that are implicitly created by a `type` definition is not so straightforward. `UpdateResult` is a union type, but the 
-fact that I alias it above and expose `..` from the module does not expose its value constructors. So `Example.elm` 
+that are implicitly created by a `type` definition is not so straightforward. `UpdateResult` is a union type, but the
+fact that I alias it above and expose `..` from the module does not expose its value constructors. So `Example.elm`
 still needs to import `Types.elm`.
 
 
@@ -76,7 +76,7 @@ was to facilitate a possible future feature where groups (and not just individua
 this choice has an unfortunate consequence. Most menus (and, in fact, _all_ of our uses of the old select widget) don't
 use option groups, but a number of the types exposed here are polymorphic in `group` and the variable needs to be
 instantiated to something concrete, because the `ItemPosition` type actually requires it. The root of the item tree
-is always a group. Now that's just a restriction imposed by the current type definition, and it can be removed or 
+is always a group. Now that's just a restriction imposed by the current type definition, and it can be removed or
 massaged, but the zipper code will become somewhat more complicated.
 
 It would be nice if `group` could be instantiated by `Never` in cases where we don't need it, but we can't do that
@@ -88,7 +88,7 @@ now, because of the zipper issue.
 Since the `group` type variable shows up all over, and since the common case is not to have groups at all, maybe
 we should offer "flat" type aliases for the common case, like:
 ```elm
-type alias FlatConfig option = Config Never option 
+type alias FlatConfig option = Config Never option
 type alias FlatModel option = Model Never option
 -- etc.
 ```
