@@ -1,6 +1,7 @@
 module Dropdown.Zipper exposing (..)
 
 import Dropdown.Types exposing (..)
+import Maybe.Extra as Maybe
 
 
 currentItem : ItemPosition group option -> Item group option
@@ -9,7 +10,7 @@ currentItem (ItemPosition item _) =
 
 
 
--- BASIC TRAVERSAL
+-- NODE-BY-NODE TRAVERSAL
 
 
 left : ItemPosition group option -> Maybe (ItemPosition group option)
@@ -52,7 +53,9 @@ down (ItemPosition item path) =
             Nothing
 
 
+
 -- PREORDER TRAVERSAL
+
 
 next : ItemPosition group option -> Maybe (ItemPosition group option)
 next pos =
@@ -64,4 +67,43 @@ next pos =
 prev : ItemPosition group option -> Maybe (ItemPosition group option)
 prev pos =
     left pos
-        |> Maybe.andThen
+        |> Maybe.andThen (Just << bottomRight)
+        |> Maybe.orElseLazy (\_ -> up pos)
+
+
+nextUp : ItemPosition group option -> Maybe (ItemPosition group option)
+nextUp pos =
+    up pos
+        |> Maybe.andThen (\parentPos -> right pos |> Maybe.orElseLazy (\_ -> nextUp parentPos))
+
+
+bottomRight : ItemPosition group option -> ItemPosition group option
+bottomRight pos =
+    down pos
+        |> Maybe.andThen (Just << bottomRight << rightmostSibling)
+        |> Maybe.withDefault pos
+
+
+rightmostSibling : ItemPosition group option -> ItemPosition group option
+rightmostSibling pos =
+    right pos
+        |> Maybe.andThen (Just << rightmostSibling)
+        |> Maybe.withDefault pos
+
+
+
+-- MAP
+
+
+mapChildren : (ItemPosition group option -> a) -> ItemPosition group option -> List a
+mapChildren fn pos =
+    let
+        go maybePos results =
+            case maybePos of
+                Nothing ->
+                    List.reverse results
+
+                Just pos ->
+                    go (right pos) ((fn pos) :: results)
+    in
+        go (down pos) []
