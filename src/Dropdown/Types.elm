@@ -24,12 +24,12 @@ type ItemPosition group option
 
 
 type ItemPath group option
-    = Top
+    = Top (List (Item group option)) (List (Item group option))
     | Node group (List (Item group option)) (ItemPath group option) (List (Item group option))
 
 
 type alias Model group option =
-    { rootItemPosition : ItemPosition group option
+    { rootItemPosition : Maybe (ItemPosition group option)
     , focusState : FocusState group option
     }
 
@@ -38,11 +38,6 @@ type Msg group option selection
     = NoOp
     | FocusStateMsg (FocusState group option)
     | SelectMsg option
-
-
-type UpdateResult group option
-    = OptionSelected option (Model group option)
-    | ModelChanged (Model group option)
 
 
 type alias Config group option selection =

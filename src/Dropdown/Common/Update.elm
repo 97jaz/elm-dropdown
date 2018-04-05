@@ -9,17 +9,17 @@ update :
     -> Config group option selection
     -> Msg group option selection
     -> Model group option
-    -> UpdateResult group option
+    -> ( Model group option, Maybe option )
 update methods config msg model =
     case msg of
         NoOp ->
-            ModelChanged model
+            ( model, Nothing )
 
         FocusStateMsg focusState ->
-            ModelChanged { model | focusState = focusState }
+            ( { model | focusState = focusState }, Nothing )
 
         SelectMsg option ->
-            OptionSelected option (modelOnSelect methods model)
+            ( modelOnSelect methods model, Just option )
 
 
 modelOnSelect : UpdateMethods -> Model group option -> Model group option

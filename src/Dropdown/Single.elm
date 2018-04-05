@@ -1,6 +1,7 @@
 module Dropdown.Single exposing (..)
 
-import Dropdown.Types as T exposing (Model, UpdateResult)
+import Dropdown.Types as T
+import Dropdown.Zipper as Zipper
 import Dropdown.Common.View as Common
 import Dropdown.Common.Update as Common
 import Dropdown.Single.View exposing (viewMethods)
@@ -20,21 +21,27 @@ type alias Model group option =
     T.Model group option
 
 
-type alias UpdateResult group option =
-    T.UpdateResult group option
-
-
 view : Config group option -> Model group option -> option -> Html (Msg group option)
 view config model selectedOption =
     Common.view viewMethods config model selectedOption
 
 
-update : Config group option -> Msg group option -> Model group option -> UpdateResult group option
-update config msg model =
-    Common.update updateMethods config msg model
+update :
+    Config group option
+    -> Msg group option
+    -> Model group option
+    -> option
+    -> ( Model group option, option )
+update config msg model option =
+    case Common.update updateMethods config msg model of
+        ( newModel, Nothing ) ->
+            ( newModel, option )
+
+        ( newModel, Just newOption ) ->
+            ( newModel, newOption )
 
 
-simpleConfig : (option -> String) -> Config () option
+simpleConfig : (option -> String) -> Config Never option
 simpleConfig optionString =
     { optionHtml = text << optionString
     , optionString = optionString
@@ -46,8 +53,8 @@ simpleConfig optionString =
     }
 
 
-flatModel : List option -> Model () option
+flatModel : List option -> Model Never option
 flatModel options =
-    { rootItemPosition = T.ItemPosition (T.Group () (List.map T.Option options)) T.Top
+    { rootItemPosition = Zipper.positionFromList options
     , focusState = T.Blurred
     }

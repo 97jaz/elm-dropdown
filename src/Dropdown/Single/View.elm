@@ -35,7 +35,7 @@ selectAll config model =
 
 items : Config group option selection -> Model group option -> selection -> List (Html (Msg group option selection))
 items config model selection =
-    Zipper.mapChildren (itemView config model selection) model.rootItemPosition
+    Zipper.mapRight (itemView config model selection) model.rootItemPosition
 
 
 itemView : Config group option selection -> Model group option -> selection -> ItemPosition group option -> Html (Msg group option selection)

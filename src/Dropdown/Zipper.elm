@@ -9,6 +9,16 @@ currentItem (ItemPosition item _) =
     item
 
 
+positionFromList : List option -> Maybe (ItemPosition Never option)
+positionFromList options =
+    case options of
+        [] ->
+            Nothing
+
+        x :: xs ->
+            Just (ItemPosition (Option x) (Top [] (List.map Option xs)))
+
+
 
 -- NODE-BY-NODE TRAVERSAL
 
@@ -16,6 +26,9 @@ currentItem (ItemPosition item _) =
 left : ItemPosition group option -> Maybe (ItemPosition group option)
 left (ItemPosition item path) =
     case path of
+        Top (l :: left) right ->
+            Just (ItemPosition l (Top left (item :: right)))
+
         Node group (l :: left) up right ->
             Just (ItemPosition l (Node group left up (item :: right)))
 
@@ -26,6 +39,9 @@ left (ItemPosition item path) =
 right : ItemPosition group option -> Maybe (ItemPosition group option)
 right (ItemPosition item path) =
     case path of
+        Top left (r :: right) ->
+            Just (ItemPosition r (Top (item :: left) right))
+
         Node group left up (r :: right) ->
             Just (ItemPosition r (Node group (item :: left) up right))
 
@@ -39,7 +55,7 @@ up (ItemPosition item path) =
         Node group left up right ->
             Just (ItemPosition (Group group (List.append (List.reverse left) (item :: right))) up)
 
-        Top ->
+        Top _ _ ->
             Nothing
 
 
@@ -95,8 +111,8 @@ rightmostSibling pos =
 -- MAP
 
 
-mapChildren : (ItemPosition group option -> a) -> ItemPosition group option -> List a
-mapChildren fn pos =
+mapRight : (ItemPosition group option -> a) -> Maybe (ItemPosition group option) -> List a
+mapRight fn maybePos =
     let
         go maybePos results =
             case maybePos of
@@ -106,4 +122,9 @@ mapChildren fn pos =
                 Just pos ->
                     go (right pos) ((fn pos) :: results)
     in
-        go (down pos) []
+        go maybePos []
+
+
+mapChildren : (ItemPosition group option -> a) -> ItemPosition group option -> List a
+mapChildren fn pos =
+    mapRight fn (down pos)

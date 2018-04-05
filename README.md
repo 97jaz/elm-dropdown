@@ -22,15 +22,14 @@ to the `view` function. The upside of this is one fewer parameter to keep track 
 The downside is that if the user needs multiple menus that use the same options, then state is duplicated. That seems
 like a fairly rare case to me.
 
-The `Msg` and `UpdateResult` types are practically the same as in the old version, and I'm not confident of the
-approach here. All of uses of the old widget take some action when the menu's selection changes, but that's not
-the only desirable mode of operation. For the multi-select widget, for example, it would be perfectly normal
-(and arguably better) to wait until the menu closes before taking action on any change, but the current `UpdateResult`
-only differentiates coarsely between changes to the selection and changes to the focus state of the widget. The client
-could peer into the returned `FocusState` to figure out if the menu is closed, or we could provide functions on the model
-to query if it's open or closed or whatnot, but the interesting question isn't "is the menu closed," but instead "was
-the menu _just_ closed." And that's really a relational property of the previous and current models, which suggests
-(to me, at least) that it's really the client app's responsibility. Even though that's kind of a pain in the ass.
+The `Msg` type is practically the same as in the old version, and I've
+abandoned the `UpdateResult` type. It's now the client's
+responsibility to check if the selection has changed (assuming the
+client cares). There's still no dead-simple way to take some action
+when the menu closes (or opens). It's certainly possible, but it
+requires the client to compare the old and new `FocusState`s of the
+widget. We could, of course, provide utility functions for exactly
+that purpose.
 
 The `Config` also makes my heart a bit heavy. The various `xxxHtml` functions are provided to allow clients to
 customize the appearance of the menus, but they don't obviate the need for the corresponding `xxxString` functions,
@@ -39,49 +38,6 @@ always-visible portion of the menu appears. The word "placeholder" suggest that 
 current selection.
 
 ---
-
-## Problems re-exporting value constructors from union types
-
-The division of the code into `Common`, on one hand, and `Single` (and `Multi` or `Checkbox` or whatever) on the other
-is carried over from the older version. With the old code, you generally have to import both `Select` and `Select.Single`
-to use the single select widget. I was hoping to avoid that need in this version, by having `Single` export all of the
-types necessary to use it. You can see [here](src/Dropdown/Single.elm), for example:
-```elm
-type alias Config group option =
-    T.Config group option option
-
-
-type alias Msg group option =
-    T.Msg group option option
-
-
-type alias Model group option =
-    T.Model group option
-
-
-type alias UpdateResult group option =
-    T.UpdateResult group option
-```
-
-Unfortunately, though, while the type aliases can be re-exported without trouble, re-exporting the value constructors
-that are implicitly created by a `type` definition is not so straightforward. `UpdateResult` is a union type, but the
-fact that I alias it above and expose `..` from the module does not expose its value constructors. So `Example.elm`
-still needs to import `Types.elm`.
-
-
-## The `group` type variable
-
-The existing code allows the use of any type to represent a _group_ node in the menu item tree. The reason for this
-was to facilitate a possible future feature where groups (and not just individual options) would be selectable. But
-this choice has an unfortunate consequence. Most menus (and, in fact, _all_ of our uses of the old select widget) don't
-use option groups, but a number of the types exposed here are polymorphic in `group` and the variable needs to be
-instantiated to something concrete, because the `ItemPosition` type actually requires it. The root of the item tree
-is always a group. Now that's just a restriction imposed by the current type definition, and it can be removed or
-massaged, but the zipper code will become somewhat more complicated.
-
-It would be nice if `group` could be instantiated by `Never` in cases where we don't need it, but we can't do that
-now, because of the zipper issue.
-
 
 ## Ugly common types
 
