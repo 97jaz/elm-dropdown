@@ -12638,7 +12638,10 @@ var _user$project$Dropdown_Types$Node = F4(
 	function (a, b, c, d) {
 		return {ctor: 'Node', _0: a, _1: b, _2: c, _3: d};
 	});
-var _user$project$Dropdown_Types$Top = {ctor: 'Top'};
+var _user$project$Dropdown_Types$Top = F2(
+	function (a, b) {
+		return {ctor: 'Top', _0: a, _1: b};
+	});
 var _user$project$Dropdown_Types$SelectMsg = function (a) {
 	return {ctor: 'SelectMsg', _0: a};
 };
@@ -12646,13 +12649,6 @@ var _user$project$Dropdown_Types$FocusStateMsg = function (a) {
 	return {ctor: 'FocusStateMsg', _0: a};
 };
 var _user$project$Dropdown_Types$NoOp = {ctor: 'NoOp'};
-var _user$project$Dropdown_Types$ModelChanged = function (a) {
-	return {ctor: 'ModelChanged', _0: a};
-};
-var _user$project$Dropdown_Types$OptionSelected = F2(
-	function (a, b) {
-		return {ctor: 'OptionSelected', _0: a, _1: b};
-	});
 
 var _user$project$Dropdown_Zipper$down = function (_p0) {
 	var _p1 = _p0;
@@ -12693,21 +12689,41 @@ var _user$project$Dropdown_Zipper$up = function (_p3) {
 };
 var _user$project$Dropdown_Zipper$right = function (_p6) {
 	var _p7 = _p6;
+	var _p9 = _p7._0;
 	var _p8 = _p7._1;
-	if ((_p8.ctor === 'Node') && (_p8._3.ctor === '::')) {
-		return _elm_lang$core$Maybe$Just(
-			A2(
-				_user$project$Dropdown_Types$ItemPosition,
-				_p8._3._0,
-				A4(
-					_user$project$Dropdown_Types$Node,
-					_p8._0,
-					{ctor: '::', _0: _p7._0, _1: _p8._1},
-					_p8._2,
-					_p8._3._1)));
-	} else {
-		return _elm_lang$core$Maybe$Nothing;
-	}
+	_v5_2:
+	do {
+		if (_p8.ctor === 'Top') {
+			if (_p8._1.ctor === '::') {
+				return _elm_lang$core$Maybe$Just(
+					A2(
+						_user$project$Dropdown_Types$ItemPosition,
+						_p8._1._0,
+						A2(
+							_user$project$Dropdown_Types$Top,
+							{ctor: '::', _0: _p9, _1: _p8._0},
+							_p8._1._1)));
+			} else {
+				break _v5_2;
+			}
+		} else {
+			if (_p8._3.ctor === '::') {
+				return _elm_lang$core$Maybe$Just(
+					A2(
+						_user$project$Dropdown_Types$ItemPosition,
+						_p8._3._0,
+						A4(
+							_user$project$Dropdown_Types$Node,
+							_p8._0,
+							{ctor: '::', _0: _p9, _1: _p8._1},
+							_p8._2,
+							_p8._3._1)));
+			} else {
+				break _v5_2;
+			}
+		}
+	} while(false);
+	return _elm_lang$core$Maybe$Nothing;
 };
 var _user$project$Dropdown_Zipper$nextUp = function (pos) {
 	return A2(
@@ -12715,7 +12731,7 @@ var _user$project$Dropdown_Zipper$nextUp = function (pos) {
 		function (parentPos) {
 			return A2(
 				_elm_community$maybe_extra$Maybe_Extra$orElseLazy,
-				function (_p9) {
+				function (_p10) {
 					return _user$project$Dropdown_Zipper$nextUp(parentPos);
 				},
 				_user$project$Dropdown_Zipper$right(pos));
@@ -12725,12 +12741,12 @@ var _user$project$Dropdown_Zipper$nextUp = function (pos) {
 var _user$project$Dropdown_Zipper$next = function (pos) {
 	return A2(
 		_elm_community$maybe_extra$Maybe_Extra$orElseLazy,
-		function (_p10) {
+		function (_p11) {
 			return _user$project$Dropdown_Zipper$nextUp(pos);
 		},
 		A2(
 			_elm_community$maybe_extra$Maybe_Extra$orElseLazy,
-			function (_p11) {
+			function (_p12) {
 				return _user$project$Dropdown_Zipper$right(pos);
 			},
 			_user$project$Dropdown_Zipper$down(pos)));
@@ -12741,9 +12757,9 @@ var _user$project$Dropdown_Zipper$rightmostSibling = function (pos) {
 		pos,
 		A2(
 			_elm_lang$core$Maybe$andThen,
-			function (_p12) {
+			function (_p13) {
 				return _elm_lang$core$Maybe$Just(
-					_user$project$Dropdown_Zipper$rightmostSibling(_p12));
+					_user$project$Dropdown_Zipper$rightmostSibling(_p13));
 			},
 			_user$project$Dropdown_Zipper$right(pos)));
 };
@@ -12753,28 +12769,28 @@ var _user$project$Dropdown_Zipper$bottomRight = function (pos) {
 		pos,
 		A2(
 			_elm_lang$core$Maybe$andThen,
-			function (_p13) {
+			function (_p14) {
 				return _elm_lang$core$Maybe$Just(
 					_user$project$Dropdown_Zipper$bottomRight(
-						_user$project$Dropdown_Zipper$rightmostSibling(_p13)));
+						_user$project$Dropdown_Zipper$rightmostSibling(_p14)));
 			},
 			_user$project$Dropdown_Zipper$down(pos)));
 };
-var _user$project$Dropdown_Zipper$mapChildren = F2(
-	function (fn, pos) {
+var _user$project$Dropdown_Zipper$mapRight = F2(
+	function (fn, maybePos) {
 		var go = F2(
 			function (maybePos, results) {
 				go:
 				while (true) {
-					var _p14 = maybePos;
-					if (_p14.ctor === 'Nothing') {
+					var _p15 = maybePos;
+					if (_p15.ctor === 'Nothing') {
 						return _elm_lang$core$List$reverse(results);
 					} else {
-						var _p15 = _p14._0;
-						var _v7 = _user$project$Dropdown_Zipper$right(_p15),
+						var _p16 = _p15._0;
+						var _v7 = _user$project$Dropdown_Zipper$right(_p16),
 							_v8 = {
 							ctor: '::',
-							_0: fn(_p15),
+							_0: fn(_p16),
 							_1: results
 						};
 						maybePos = _v7;
@@ -12785,44 +12801,86 @@ var _user$project$Dropdown_Zipper$mapChildren = F2(
 			});
 		return A2(
 			go,
-			_user$project$Dropdown_Zipper$down(pos),
+			maybePos,
 			{ctor: '[]'});
 	});
-var _user$project$Dropdown_Zipper$left = function (_p16) {
-	var _p17 = _p16;
-	var _p18 = _p17._1;
-	if ((_p18.ctor === 'Node') && (_p18._1.ctor === '::')) {
-		return _elm_lang$core$Maybe$Just(
-			A2(
-				_user$project$Dropdown_Types$ItemPosition,
-				_p18._1._0,
-				A4(
-					_user$project$Dropdown_Types$Node,
-					_p18._0,
-					_p18._1._1,
-					_p18._2,
-					{ctor: '::', _0: _p17._0, _1: _p18._3})));
-	} else {
-		return _elm_lang$core$Maybe$Nothing;
-	}
+var _user$project$Dropdown_Zipper$mapChildren = F2(
+	function (fn, pos) {
+		return A2(
+			_user$project$Dropdown_Zipper$mapRight,
+			fn,
+			_user$project$Dropdown_Zipper$down(pos));
+	});
+var _user$project$Dropdown_Zipper$left = function (_p17) {
+	var _p18 = _p17;
+	var _p20 = _p18._0;
+	var _p19 = _p18._1;
+	_v10_2:
+	do {
+		if (_p19.ctor === 'Top') {
+			if (_p19._0.ctor === '::') {
+				return _elm_lang$core$Maybe$Just(
+					A2(
+						_user$project$Dropdown_Types$ItemPosition,
+						_p19._0._0,
+						A2(
+							_user$project$Dropdown_Types$Top,
+							_p19._0._1,
+							{ctor: '::', _0: _p20, _1: _p19._1})));
+			} else {
+				break _v10_2;
+			}
+		} else {
+			if (_p19._1.ctor === '::') {
+				return _elm_lang$core$Maybe$Just(
+					A2(
+						_user$project$Dropdown_Types$ItemPosition,
+						_p19._1._0,
+						A4(
+							_user$project$Dropdown_Types$Node,
+							_p19._0,
+							_p19._1._1,
+							_p19._2,
+							{ctor: '::', _0: _p20, _1: _p19._3})));
+			} else {
+				break _v10_2;
+			}
+		}
+	} while(false);
+	return _elm_lang$core$Maybe$Nothing;
 };
 var _user$project$Dropdown_Zipper$prev = function (pos) {
 	return A2(
 		_elm_community$maybe_extra$Maybe_Extra$orElseLazy,
-		function (_p19) {
+		function (_p21) {
 			return _user$project$Dropdown_Zipper$up(pos);
 		},
 		A2(
 			_elm_lang$core$Maybe$andThen,
-			function (_p20) {
+			function (_p22) {
 				return _elm_lang$core$Maybe$Just(
-					_user$project$Dropdown_Zipper$bottomRight(_p20));
+					_user$project$Dropdown_Zipper$bottomRight(_p22));
 			},
 			_user$project$Dropdown_Zipper$left(pos)));
 };
-var _user$project$Dropdown_Zipper$currentItem = function (_p21) {
-	var _p22 = _p21;
-	return _p22._0;
+var _user$project$Dropdown_Zipper$positionFromList = function (options) {
+	var _p23 = options;
+	if (_p23.ctor === '[]') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _elm_lang$core$Maybe$Just(
+			A2(
+				_user$project$Dropdown_Types$ItemPosition,
+				_user$project$Dropdown_Types$Option(_p23._0),
+				A2(
+					_user$project$Dropdown_Types$Top,
+					{ctor: '[]'},
+					A2(_elm_lang$core$List$map, _user$project$Dropdown_Types$Option, _p23._1))));
+	}
+};
+var _user$project$Dropdown_Zipper$currentItem = function (_p24) {
+	var _p25 = _p24;
+	return _p25._0;
 };
 
 var _user$project$Dropdown_Common_Update$modelOnSelect = F2(
@@ -12836,17 +12894,21 @@ var _user$project$Dropdown_Common_Update$update = F4(
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'NoOp':
-				return _user$project$Dropdown_Types$ModelChanged(model);
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Maybe$Nothing};
 			case 'FocusStateMsg':
-				return _user$project$Dropdown_Types$ModelChanged(
-					_elm_lang$core$Native_Utils.update(
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{focusState: _p0._0}));
+						{focusState: _p0._0}),
+					_1: _elm_lang$core$Maybe$Nothing
+				};
 			default:
-				return A2(
-					_user$project$Dropdown_Types$OptionSelected,
-					_p0._0,
-					A2(_user$project$Dropdown_Common_Update$modelOnSelect, methods, model));
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$Dropdown_Common_Update$modelOnSelect, methods, model),
+					_1: _elm_lang$core$Maybe$Just(_p0._0)
+				};
 		}
 	});
 
@@ -13075,7 +13137,7 @@ var _user$project$Dropdown_Single_View$groupView = F6(
 var _user$project$Dropdown_Single_View$items = F3(
 	function (config, model, selection) {
 		return A2(
-			_user$project$Dropdown_Zipper$mapChildren,
+			_user$project$Dropdown_Zipper$mapRight,
 			A3(_user$project$Dropdown_Single_View$itemView, config, model, selection),
 			model.rootItemPosition);
 	});
@@ -13108,13 +13170,7 @@ var _user$project$Dropdown_Single_Update$updateMethods = {closeOnSelect: true};
 
 var _user$project$Dropdown_Single$flatModel = function (options) {
 	return {
-		rootItemPosition: A2(
-			_user$project$Dropdown_Types$ItemPosition,
-			A2(
-				_user$project$Dropdown_Types$Group,
-				{ctor: '_Tuple0'},
-				A2(_elm_lang$core$List$map, _user$project$Dropdown_Types$Option, options)),
-			_user$project$Dropdown_Types$Top),
+		rootItemPosition: _user$project$Dropdown_Zipper$positionFromList(options),
 		focusState: _user$project$Dropdown_Types$Blurred
 	};
 };
@@ -13139,9 +13195,14 @@ var _user$project$Dropdown_Single$simpleConfig = function (optionString) {
 			})
 	};
 };
-var _user$project$Dropdown_Single$update = F3(
-	function (config, msg, model) {
-		return A4(_user$project$Dropdown_Common_Update$update, _user$project$Dropdown_Single_Update$updateMethods, config, msg, model);
+var _user$project$Dropdown_Single$update = F4(
+	function (config, msg, model, option) {
+		var _p2 = A4(_user$project$Dropdown_Common_Update$update, _user$project$Dropdown_Single_Update$updateMethods, config, msg, model);
+		if (_p2._1.ctor === 'Nothing') {
+			return {ctor: '_Tuple2', _0: _p2._0, _1: option};
+		} else {
+			return {ctor: '_Tuple2', _0: _p2._0, _1: _p2._1._0};
+		}
 	});
 var _user$project$Dropdown_Single$view = F3(
 	function (config, model, selectedOption) {
@@ -13163,16 +13224,10 @@ var _user$project$Dropdown_Single_Example$config = _user$project$Dropdown_Single
 var _user$project$Dropdown_Single_Example$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
-		var _p2 = A3(_user$project$Dropdown_Single$update, _user$project$Dropdown_Single_Example$config, _p1._0, model.menuModel);
-		if (_p2.ctor === 'OptionSelected') {
-			return _elm_lang$core$Native_Utils.update(
-				model,
-				{selectedItem: _p2._0, menuModel: _p2._1});
-		} else {
-			return _elm_lang$core$Native_Utils.update(
-				model,
-				{menuModel: _p2._0});
-		}
+		var _p2 = A4(_user$project$Dropdown_Single$update, _user$project$Dropdown_Single_Example$config, _p1._0, model.menuModel, model.selectedItem);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{selectedItem: _p2._1, menuModel: _p2._0});
 	});
 var _user$project$Dropdown_Single_Example$states = {
 	ctor: '::',
@@ -13231,7 +13286,7 @@ Elm['Dropdown'] = Elm['Dropdown'] || {};
 Elm['Dropdown']['Single'] = Elm['Dropdown']['Single'] || {};
 Elm['Dropdown']['Single']['Example'] = Elm['Dropdown']['Single']['Example'] || {};
 if (typeof _user$project$Dropdown_Single_Example$main !== 'undefined') {
-    _user$project$Dropdown_Single_Example$main(Elm['Dropdown']['Single']['Example'], 'Dropdown.Single.Example', {"types":{"unions":{"Dropdown.Types.ItemPosition":{"args":["group","option"],"tags":{"ItemPosition":["Dropdown.Types.Item group option","Dropdown.Types.ItemPath group option"]}},"Dropdown.Types.FocusState":{"args":["group","option"],"tags":{"Open":["Dropdown.Types.OpenState group option"],"Blurred":[],"Focused":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dropdown.Single.Example.Msg":{"args":[],"tags":{"MenuMsg":["Dropdown.Single.Msg () (Maybe.Maybe Dropdown.Single.Example.State)"]}},"Dropdown.Types.Msg":{"args":["group","option","selection"],"tags":{"FocusStateMsg":["Dropdown.Types.FocusState group option"],"NoOp":[],"SelectMsg":["option"]}},"Dropdown.Types.Item":{"args":["group","option"],"tags":{"Group":["group","List (Dropdown.Types.Item group option)"],"Option":["option"]}},"Dropdown.Types.ItemPath":{"args":["group","option"],"tags":{"Node":["group","List (Dropdown.Types.Item group option)","Dropdown.Types.ItemPath group option","List (Dropdown.Types.Item group option)"],"Top":[]}},"Dropdown.Types.OpenState":{"args":["group","option"],"tags":{"Highlight":["Dropdown.Types.ItemPosition group option"],"Initial":[]}}},"aliases":{"Dropdown.Single.Msg":{"args":["group","option"],"type":"Dropdown.Types.Msg group option option"},"Dropdown.Single.Example.State":{"args":[],"type":"{ abbrev : String, name : String }"}},"message":"Dropdown.Single.Example.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Dropdown_Single_Example$main(Elm['Dropdown']['Single']['Example'], 'Dropdown.Single.Example', {"types":{"unions":{"Dropdown.Types.ItemPosition":{"args":["group","option"],"tags":{"ItemPosition":["Dropdown.Types.Item group option","Dropdown.Types.ItemPath group option"]}},"Basics.Never":{"args":[],"tags":{"JustOneMore":["Basics.Never"]}},"Dropdown.Types.FocusState":{"args":["group","option"],"tags":{"Open":["Dropdown.Types.OpenState group option"],"Blurred":[],"Focused":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dropdown.Single.Example.Msg":{"args":[],"tags":{"MenuMsg":["Dropdown.Single.Msg Basics.Never (Maybe.Maybe Dropdown.Single.Example.State)"]}},"Dropdown.Types.Msg":{"args":["group","option","selection"],"tags":{"FocusStateMsg":["Dropdown.Types.FocusState group option"],"NoOp":[],"SelectMsg":["option"]}},"Dropdown.Types.Item":{"args":["group","option"],"tags":{"Group":["group","List (Dropdown.Types.Item group option)"],"Option":["option"]}},"Dropdown.Types.ItemPath":{"args":["group","option"],"tags":{"Node":["group","List (Dropdown.Types.Item group option)","Dropdown.Types.ItemPath group option","List (Dropdown.Types.Item group option)"],"Top":["List (Dropdown.Types.Item group option)","List (Dropdown.Types.Item group option)"]}},"Dropdown.Types.OpenState":{"args":["group","option"],"tags":{"Highlight":["Dropdown.Types.ItemPosition group option"],"Initial":[]}}},"aliases":{"Dropdown.Single.Msg":{"args":["group","option"],"type":"Dropdown.Types.Msg group option option"},"Dropdown.Single.Example.State":{"args":[],"type":"{ abbrev : String, name : String }"}},"message":"Dropdown.Single.Example.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
